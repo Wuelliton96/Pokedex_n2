@@ -55,8 +55,8 @@ class _QuizState extends State<Quiz> {
   void checkAnswer(String selectedName) {
     bool isCorrect = pokemonList?[currentQuestion].name == selectedName; // Verifica se a resposta está correta
     String mensagem = isCorrect
-        ? 'Correto!'
-        : 'Resposta incorreta, correto será ${pokemonList![currentQuestion].name}'; // Mensagem de feedback
+        ? 'Você acertou!'
+        : 'infelimente errou! Responsta correta: ${pokemonList![currentQuestion].name}'; // Mensagem de feedback
 
     mostrarSnackbar(mensagem); // Exibe um Snackbar com o feedback
 
@@ -91,7 +91,7 @@ class _QuizState extends State<Quiz> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Fim do Jogo'),
-          content: Text('Sua pontuação de acertos foram  $score de 10 perguntas'), // Exibe a pontuação final
+          content: Text('Você acestou $score de 10 perguntas'), // Exibe a pontuação final
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -114,37 +114,43 @@ class _QuizState extends State<Quiz> {
         title: const Center(child: Text('Quiz Pokémon')),
       ),
       body: (pokemonList != null && currentQuestion < 10)
-          ? Column(
+      ? Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      'Certos: $score',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    Text(
-                      'Errados: $scorem',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ],
+                Text(
+                  'Certos: $score',
+                  style: const TextStyle(fontSize: 20),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.network(pokemonList![currentQuestion].image), // Exibe a imagem do Pokémon atual
+                const SizedBox(height:10),
+                Text(
+                  'Errados: $scorem',
+                  style: const TextStyle(fontSize: 20),
                 ),
-                const SizedBox(height: 20),
-                ...pokemonList![currentQuestion]
-                    .getRandomOptions(pokemonList!) // Obtém opções de nomes de Pokémon
-                    .map((option) {
-                  return ElevatedButton(
-                    onPressed: () => checkAnswer(option), // Verifica a resposta quando um botão é pressionado
-                    child: Text(option), // Exibe o nome do Pokémon como opção
-                  );
-                }),
               ],
-            )
-          : const Center(child: CircularProgressIndicator()), // Exibe um indicador de carregamento
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Image.network(pokemonList![currentQuestion].image), // Exibe a imagem do Pokémon atual
+            ),
+            const SizedBox(height: 40),
+            ...pokemonList![currentQuestion]
+                .getRandomOptions(pokemonList!) // Obtém opções de nomes de Pokémon
+                .map((option) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () => checkAnswer(option), // Verifica a resposta quando um botão é pressionado
+                  child: Text(option, style: const TextStyle(fontSize: 20),), // Exibe o nome do Pokémon como opção
+                ),
+              );
+            }),
+          ],
+        )
+      : const Center(child: CircularProgressIndicator()), // Exibe um indicador de carregamento
     );
   }
 }
